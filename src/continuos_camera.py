@@ -5,10 +5,10 @@ import mediapipe as mp
 import numpy as np
 import pandas as pd
 import torch.nn.functional as F
-from senaliza_v2 import *
+from src.senaliza_v2 import *
 
 # Cargar el modelo de PyTorch
-model = torch.load('senalizav2.pt', map_location=torch.device('cpu'))
+model = torch.load('senalizaV2.pt', map_location=torch.device('cpu'))
 model.eval()
 
 mphands = mp.solutions.hands
