@@ -1,0 +1,45 @@
+.blue-section {
+    background-color: rgba(46, 96, 146, 1);
+    min-height: 100px;
+    position: relative;
+}
+
+.logo-text {
+    max-width: 216px;
+    color: #fff;
+    white-space: nowrap;
+    padding: -24px 0 0;
+    font: 400 70px 'Amatic SC', sans-serif;
+}
+
+.circular-image-container {
+    background-color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;  /* Ajusta el tamaño del círculo */
+    height: 120px; /* Ajusta el tamaño del círculo */
+    position: absolute;
+    top: 50%; /* Posicionar verticalmente el círculo */
+    right: 0; /* Posicionar horizontalmente el círculo a la derecha */
+    transform: translate(50%, -50%); /* Centrar el círculo perfectamente sobre el borde */
+    border: 5px solid #fff; /* Un borde blanco alrededor del círculo (opcional) */
+}
+
+.circular-image-container img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; /* Hacer que la imagen dentro del círculo también sea redonda */
+    object-fit: cover; /* Asegurarse de que la imagen se ajuste bien dentro del círculo */
+}
+
+.container-camera{
+    margin: 0;
+    padding: 40px;
+    width: 100%;
+    height: 100vh;
+    background-color: #E2D8F8;
+    color: black;
+    text-align: center;
+}

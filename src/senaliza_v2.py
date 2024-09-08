@@ -27,7 +27,7 @@ import torch.nn as nn
 from torchvision.utils import make_grid
 # %matplotlib inline
 
-DATA_DIR = './LSC'
+DATA_DIR = 'data/LSC'
 
 #Applying data pre-processing techniques
 train_tfms = T.Compose([T.RandomCrop(258, padding=4, padding_mode='reflect'),

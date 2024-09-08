@@ -5,7 +5,7 @@ import mediapipe as mp
 import numpy as np
 import pandas as pd
 import torch.nn.functional as F
-from src.senaliza_v2 import *
+from senaliza_v2 import *
 
 # Cargar el modelo de PyTorch
 model = torch.load('senalizaV2.pt', map_location=torch.device('cpu'))
