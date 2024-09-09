@@ -12,7 +12,7 @@ from torchvision.datasets import ImageFolder
 
 
 # Directorio de datos
-DATA_DIR = "data/LSC"
+DATA_DIR = "data/WB_LSC"
 
 # Aplicar transformaciones de preprocesamiento de datos
 train_tfms = T.Compose([
