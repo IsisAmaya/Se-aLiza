@@ -5,12 +5,10 @@ Este es un módulo Flask para procesar y servir imágenes de video con OpenCV.
 import cv2
 from flask import Flask, Response, render_template, redirect, url_for
 from src.senaliza_v2 import *
-from src.camara_flask import (hands, initialize_camera, letterpred, model, process_frame)
+from src.camara_flask import (hands_global, initialize_camera, letter_pred_global, model_global, process_frame)
 
 app = Flask(__name__)
 # Inicializar cámara
-
-
 
 def generate_frames():
     """
@@ -22,7 +20,7 @@ def generate_frames():
         if not success:
             break
         # Procesar frame y hacer predicción
-        frame = process_frame(frame, model, hands, letterpred)
+        frame = process_frame(frame, model_global, hands_global, letter_pred_global)
 
         # Codificar la imagen como JPEG para enviar al cliente
         ret, buffer = cv2.imencode(".jpg", frame) # pylint: disable=no-member

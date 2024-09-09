@@ -12,7 +12,7 @@ import torch.nn.functional as F
 
 # Cargar el modelo de PyTorch
 model_global = torch.load(
-    r"C:\Users\rozos\OneDrive\Escritorio\SenaLiza\src\senalizaV5.pt",
+    r"D:\Universidad\Septimo Semestre\Proyecto Integrador II\proyecto\SenaLiza\src\senalizaV5.pt",
     map_location=torch.device("cpu"),
 )
 model_global.eval()

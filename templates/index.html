@@ -27,20 +27,22 @@
   </head>
 
   <body>
-    <div class="blue-section">
-      <div class="container-fluid ms-4 mt-1">
-        <!-- Contenido de la sección -->
-        <h1 class="logo-text">SeñaLiza</h1>
-        <div class="circular-image-container">
-          <img
-            src="{{ url_for('static', filename='lengua.png') }}"
-            alt="Logo"
-          />
+    <div class="container">
+      <div class="blue-section">
+        <div class="container-fluid ms-4 mt-1">
+          <!-- Contenido de la sección -->
+          <h1 class="logo-text">SeñaLiza</h1>
+          <div class="circular-image-container">
+            <img
+              src="{{ url_for('static', filename='lengua.png') }}"
+              alt="Logo"
+            />
+          </div>
         </div>
-      </div>
-    </div>    
-    
-    <div class="container-fluid">
+      </div>    
+    </div>
+
+    <div class="d-flex justify-content-center mt-3">
       <div class="row">
         <div class="col">
           <h2>¡Bienvenido a SeñaLiza!</h2>
@@ -50,14 +52,14 @@
 
     <div class="container justify-content-center"></div>
       <div class="row">
-        <div class="col">
-          <p>SeñaLiza es una aplicación que te permite traducir lengua de señas a letras o palabras.
-
-            Para comenzar, presiona el botón de abajo. Luego, enfoca la cámara a la letra que deseas traducir.</p>
+        <div class="d-flex justify-content-center">
+          <div class="tarjeta">
+            <p>SeñaLiza es una aplicación que te permite traducir lengua de señas a letras o palabras.</p>
+             <p>Para comenzar, presiona el botón de abajo. Luego, enfoca la cámara a la letra que deseas traducir.</p> 
+          </div>
         </div>
       </div>
     </div>
-
     <div>
       <div class="d-flex justify-content-center"><a href="{{ url_for('start_translate') }}" class="btn btn-primary">Comenzar</a></div>
     </div>

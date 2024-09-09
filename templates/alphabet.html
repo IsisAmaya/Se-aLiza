@@ -27,16 +27,19 @@
   </head>
 
   <body>
-    <div class="blue-section">
-      <div class="container-fluid ms-4 mt-1">
-        <h1 class="logo-text">SeñaLiza</h1>
-        <div class="circular-image-container">
-          <img
-            src="{{ url_for('static', filename='lengua.png') }}"
-            alt="Logo"
-          />
+    <div class="container">
+      <div class="blue-section">
+        <div class="container-fluid ms-4 mt-1">
+          <!-- Contenido de la sección -->
+          <h1 class="logo-text">SeñaLiza</h1>
+          <div class="circular-image-container">
+            <img
+              src="{{ url_for('static', filename='lengua.png') }}"
+              alt="Logo"
+            />
+          </div>
         </div>
-      </div>
+      </div>    
     </div>
     <div class="container-camera">
       <img src="{{ url_for('video_feed') }}" width="640" height="480" />
