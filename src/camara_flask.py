@@ -92,32 +92,33 @@ def process_frame(frame, model, hands, letter_pred):  # pylint: disable=too-many
                 frame, cv2.COLOR_BGR2GRAY
             )  # pylint: disable=no-member
             analysis_frame = analysis_frame[y_min:y_max, x_min:x_max]
-            analysis_frame = cv2.resize(
-                analysis_frame, (64, 64)
-            )  # pylint: disable=no-member
-            analysis_frame = (
-                torch.tensor(analysis_frame, dtype=torch.float32)
-                .unsqueeze(0)
-                .unsqueeze(0)
-                / 255.0
-            )
-            analysis_frame = analysis_frame.repeat(1, 3, 1, 1)
+            if analysis_frame.size > 0:
+                analysis_frame = cv2.resize(analysis_frame, (64, 64))  # pylint: disable=no-member
+                analysis_frame = (
+                    torch.tensor(analysis_frame, dtype=torch.float32)
+                    .unsqueeze(0)
+                    .unsqueeze(0)
+                    / 255.0
+                )
+                analysis_frame = analysis_frame.repeat(1, 3, 1, 1)
 
-            with torch.no_grad():
-                prediction = model(analysis_frame)
-                prediction = F.softmax(prediction, dim=1)
-                pred_array = prediction.numpy()[0]
-                letter_prediction = letter_pred[np.argmax(pred_array)]
+                with torch.no_grad():
+                    prediction = model(analysis_frame)
+                    prediction = F.softmax(prediction, dim=1)
+                    pred_array = prediction.numpy()[0]
+                    letter_prediction = letter_pred[np.argmax(pred_array)]
 
-            # Dibujar predicción en el frame
-            cv2.putText(
-                frame,
-                f"Pred: {letter_prediction}",
-                (x_min, y_min - 10),
-                cv2.FONT_HERSHEY_SIMPLEX,  # pylint: disable=no-member
-                1,
-                (0, 0, 255),  # pylint: disable=no-member
-                2,
-            )
+                # Dibujar predicción en el frame
+                cv2.putText(
+                    frame,
+                    f"Pred: {letter_prediction}",
+                    (x_min, y_min - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX,  # pylint: disable=no-member
+                    1,
+                    (0, 0, 255),  # pylint: disable=no-member
+                    2,
+                )
+            else:
+                print("Error: El frame de análisis está vacío, no se puede redimensionar.")
 
     return frame
