@@ -1,5 +1,7 @@
 """
-Este módulo captura video desde la cámara, procesa los frames utilizando Mediapipe y un modelo de PyTorch para predecir letras en lenguaje de señas colombianas.
+Este módulo captura video desde la cámara, procesa los frames 
+utilizando Mediapipe y un modelo de PyTorch para predecir letras 
+en lenguaje de señas colombianas.
 """
 
 import torch
