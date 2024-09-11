@@ -8,6 +8,7 @@ import mediapipe as mp
 import numpy as np
 import torch
 import torch.nn.functional as F
+import os
 
 # Asegúrate de que aquí importas la arquitectura del modelo que hayas definido
 from src.senaliza_v2 import \
@@ -16,11 +17,11 @@ from src.senaliza_v2 import \
 # Inicializar el modelo
 model_global = ColombianHandGestureResnet()
 
+# Imprimir el directorio actual
+print("Directorio actual:", os.getcwd())
+
 # Cargar los pesos del modelo (state_dict) en lugar de todo el modelo
-state_dict = torch.load(
-    r"C:\Users\rozos\OneDrive\Escritorio\SenaLiza\data\senalizaV5-1.pth",
-    # Ruta al archivo con los pesos
-    # Asegúrate de mapear al dispositivo correcto
+state_dict = torch.load("./src/senalizaV5-1.pth",
     map_location=torch.device("cpu"),
 )
 
