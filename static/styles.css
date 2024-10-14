@@ -1,60 +1,80 @@
-.blue-section {
-  background-color: rgb(46 96 146 / 100%);
-  min-height: 100px;
-  position: relative;
+/* Fuente y estilo general */
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: #f1f4f8;
+  color: #212529;
 }
 
-.logo-text {
-  max-width: 216px;
-  color: #fff;
-  white-space: nowrap;
-  padding: -24px 0 0;
-  font:
-    400 70px "Amatic SC",
-    sans-serif;
+/* Navbar */
+.navbar {
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.circular-image-container {
-  background-color: #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 120px; /* Ajusta el tamaño del círculo */
-  height: 120px; /* Ajusta el tamaño del círculo */
-  position: absolute;
-  top: 50%; /* Posicionar verticalmente el círculo */
-  right: 0; /* Posicionar horizontalmente el círculo a la derecha */
-  transform: translate(
-    50%,
-    -50%
-  ); /* Centrar el círculo perfectamente sobre el borde */
-  border: 5px solid #fff; /* Un borde blanco alrededor del círculo (opcional) */
+.navbar-brand span {
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
-.circular-image-container img {
+/* Video Frame */
+.video-frame {
+  max-width: 600px;
+  margin: auto;
+  border-radius: 15px;
+  padding: 3rem;
+  background-color: white;
+}
+
+/* Ajustes del video */
+.video-box {
   width: 100%;
-  height: 100%;
-  border-radius: 50%; /* Hacer que la imagen dentro del círculo también sea redonda */
-  object-fit: cover; /* Asegurarse de que la imagen se ajuste bien dentro del círculo */
+  max-width: 480px;
+  height: auto;
+  border-radius: 15px;
+  object-fit: cover;
 }
 
-.container-camera {
-  margin: 0;
-  padding: 40px;
-  width: 100%;
-  height: 100vh;
-  background-color: #ffffff;
-  color: black;
-  text-align: center;
+/* Botones */
+.btn-primary {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
-.tarjeta {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin: 20px;
-  display: inline-block;
-  width: 300px;
+.btn-primary:hover {
+  background-color: #1e40af;
+  border-color: #1e40af;
+}
+
+.btn-danger {
+  background-color: #dc2626;
+  border-color: #dc2626;
+}
+
+.btn-danger:hover {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+/* Footer */
+footer {
+  background-color: #1f2937 !important;
+}
+
+/* Estilo de las cartas */
+.card {
+  border-radius: 15px;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.card-img-top {
+  max-height: 150px;
+  object-fit: contain;
 }

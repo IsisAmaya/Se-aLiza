@@ -21,7 +21,7 @@ model_global = ColombianHandGestureResnet()
 print("Directorio actual:", os.getcwd())
 
 # Cargar los pesos del modelo (state_dict) en lugar de todo el modelo
-state_dict = torch.load("./src/senalizaV5-1.pth",
+state_dict = torch.load(r"C:\Users\rozos\OneDrive\Escritorio\SenaLiza\src\senalizaV5-1.pth",
     map_location=torch.device("cpu"),
 )
 
