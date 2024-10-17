@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Palabras - SeñaLiza{% endblock %}
+
+{% block content %}
+<div class="video-frame p-5 shadow-lg rounded-4 bg-white">
+  <h2 class="mb-4 fw-bold">Palabras en Lengua de Señas</h2>
+  <p class="mb-4 text-muted">
+    Comienza la grabacion de una palabra en lengua de señas, cuando termines de grabar la palabra, presiona el boton de finalizar.
+  </p>
+  <div class="d-flex justify-content-center">
+    <img src="{{ url_for('video_feed_words') }}" class="video-box" />
+  </div>
+  <h4 class="mt-3" id="dynamic-string">Traducción</h4>
+  <div class="row">
+    <div class="col">  
+      <div class="container mt-4">
+      <button id="start-btn" class="btn btn-primary btn-lg px-5 rounded-pill">Grabar</button>
+      </div>
+    </div>
+    <div class="col">
+      <div class="container mt-4">
+        <button id="stop-btn" class="btn btn-secondary btn-lg px-5 rounded-pill">Detener</button>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4">
+    <a href="{{ url_for('finish_translate') }}" class="btn btn-danger btn-lg px-5 rounded-pill">Finalizar</a>
+  </div>
+  <div class="mt-4">
+    <img src="{{ url_for('static', filename='Terminar.gif') }}" alt="Terminar Traducción" width="175" height="105" />
+  </div>
+  <div class="text-start mt-5">
+    <a href="{{ url_for('download_history') }}">
+        <button class="btn btn-link">Descargar Historial</button>
+    </a>
+</div>
+</div>
+
+
+
+
+<script>
+  $("#start-btn").click(function() {
+      $.ajax({
+          url: "/start_recording",
+          type: "POST",
+          success: function(response) {
+              alert(response.message);
+          }
+      });
+  });
+</script>
+
+<script>
+  $("#stop-btn").click(function() {
+      $.ajax({
+          url: "/stop_recording",
+          type: "POST",
+          success: function(response) {
+              alert(response.message);
+          }
+      });
+  });
+</script>
+
+<script type="text/javascript" charset="utf-8">
+  document.addEventListener('DOMContentLoaded', function () {
+      var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+      socket.on('update_string', function(data) {
+          document.getElementById('dynamic-string').innerText = data.text;
+      });
+  });
+</script>
+{% endblock %}
+
+
+
