@@ -78,3 +78,10 @@ footer {
   max-height: 150px;
   object-fit: contain;
 }
+
+.video-box {
+  transition: transform 0.2s ease-in-out;
+}
+.video-box:hover {
+  transform: scale(1.5); /* Zooms in when hovering */
+}

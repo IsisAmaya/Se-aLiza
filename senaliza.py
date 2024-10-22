@@ -29,6 +29,8 @@ socketio = SocketIO(app)
 is_recording = False
 frame_queue = queue.Queue()
 prediction = ""
+cola_de_grabaciones = []
+
 
 history_folder = "histories"
 historial = []
@@ -107,6 +109,13 @@ def process_after_stop():
     else:
         print("No hay datos en la cola para procesar.")
 
+def hay_datos_para_procesar():
+    """Verifica si hay datos en la cola para procesar."""
+    global cola_de_grabaciones  # Asegurarse de usar la variable global
+    if len(cola_de_grabaciones) == 0:
+        return False
+    return True
+
 @socketio.on('connect')
 def handle_connect():
     threading.Thread(target=send_updates).start()
@@ -117,16 +126,34 @@ def start_recording():
     global is_recording
     is_recording = True
     print("Grabación iniciada")
-    return jsonify({"message": "Grabación iniciada"})
+    return jsonify({
+        "status": "success",
+        "message": "Grabación iniciada"
+    })
 
 @app.route("/stop_recording", methods=["POST"])
 def stop_recording():
     """Detiene la grabación y lanza el procesamiento en segundo plano."""
     global is_recording
+    global cola_de_grabaciones
+    
     is_recording = False
     print("Grabación detenida")
+
+    # Verifica si hay datos para procesar
+    if not frame_queue.qsize():
+        return jsonify({
+            "status": "info",
+            "message": "No hay datos en la cola para procesar."
+        }), 200
+
+    # Simula el procesamiento de los datos
     threading.Thread(target=process_after_stop).start()
-    return jsonify({"message": "Grabación detenida. Traduciendo..."})
+    
+    return jsonify({
+        "status": "success",
+        "message": "Grabación detenida. Traduciendo..."
+    }), 200
 
 @app.route("/alphabet")
 def alphabet():
@@ -189,15 +216,16 @@ def biblioteca():
 @app.route('/download_history')
 def download_history():
     global historial
-    if historial:
-        timestamp = datetime.now().strftime("%Y%m%d%H")
-        user_history_file = os.path.join(history_folder, f"historial_{timestamp}.txt")
-        with open(user_history_file, 'w') as file:
-            for palabra in historial:
-                file.write(palabra + '\n')
-        return send_file(user_history_file, as_attachment=True)
-    else:
+    if not historial:
         return "No hay historial disponible para descargar."
+        
+    timestamp = datetime.now().strftime("%Y%m%d%H")
+    user_history_file = os.path.join(history_folder, f"historial_{timestamp}.txt")
+    with open(user_history_file, 'w') as file:
+        for palabra in historial:
+            file.write(palabra + '\n')
+        file.write("Grabación detenida\n")  # Añadimos este mensaje al historial
+    return send_file(user_history_file, as_attachment=True)
 
 # Definición de rutas
 @app.route("/")

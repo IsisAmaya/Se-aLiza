@@ -8,17 +8,40 @@
   <p class="mb-4 text-muted">
     Apunta la cámara hacia una letra en lenguaje de señas para comenzar la traducción.
   </p>
+
+  <!-- Zoom buttons -->
+  <div class="d-flex justify-content-center mb-3">
+    <button onclick="zoomIn()" class="btn btn-primary me-2">Zoom In</button>
+    <button onclick="zoomOut()" class="btn btn-secondary">Zoom Out</button>
+  </div>
+
+  <!-- Video feed -->
   <div class="d-flex justify-content-center">
     <img src="{{ url_for('video_feed_alphabet') }}" class="video-box" />
   </div>
+
+  <!-- Finalize translation button -->
   <div class="mt-4">
     <a href="{{ url_for('finish_translate') }}" class="btn btn-danger btn-lg px-5 rounded-pill">Finalizar</a>
   </div>
+
+  <!-- GIF to show how to finish -->
   <div class="mt-4">
     <img src="{{ url_for('static', filename='Terminar.gif') }}" alt="Terminar Traducción" width="175" height="105" />
   </div>
 </div>
+
+<script>
+  // Function to zoom in
+  function zoomIn() {
+    const video = document.querySelector('.video-box');
+    video.style.transform = "scale(1.5)";
+  }
+
+  // Function to zoom out
+  function zoomOut() {
+    const video = document.querySelector('.video-box');
+    video.style.transform = "scale(1)";
+  }
+</script>
 {% endblock %}
-
-
-
