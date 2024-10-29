@@ -1,0 +1,28 @@
+{% extends 'base.html' %} {% block title %}Inicio - SeñaLiza{% endblock %} {%
+block content %}
+<h2>Historial de Palabras</h2>
+<div class="video-frame p-5 shadow-lg rounded-4 bg-white">
+  <ul class="list-group">
+    {% for traduccion in historial %}
+    <li class="list-group-item list-group-item-primary">{{ traduccion }}</li>
+    {% endfor %}
+  </ul>
+
+  <div class="row mt-4">
+    <div class="col">
+      <div class="text-end">
+        <a href="{{ url_for('clear_history') }}">
+          <button class="btn btn-link">Borrar Historial</button>
+        </a>
+      </div>
+    </div>
+    <div class="col">
+      <div class="text-start">
+        <a href="{{ url_for('download_history') }}">
+          <button class="btn btn-link">Descargar Historial</button>
+        </a>
+    </div>
+    </div>
+  </div>  
+</div>
+{% endblock %}

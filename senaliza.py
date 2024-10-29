@@ -7,9 +7,11 @@ import os
 import queue
 import time
 import threading
+from io import BytesIO
 from datetime import datetime
-from flask import Flask, Response, render_template, redirect, url_for, jsonify, session, send_file
+from flask import Flask, Response, render_template, redirect, url_for, jsonify, send_file, request
 from flask_socketio import SocketIO, emit
+from flask_session import Session
 from src.senaliza_v2 import *
 from src.camara_flask import (
     hands_global,
@@ -31,9 +33,7 @@ frame_queue = queue.Queue()
 prediction = ""
 cola_de_grabaciones = []
 
-
-history_folder = "histories"
-historial = []
+global_historial = {}
 
 # Inicializar la cámara y generar frames
 def generate_frames():
@@ -95,19 +95,26 @@ def send_updates():
         dynamic_string = "La palabra es: " + prediction
         socketio.emit('update_string', {'text': dynamic_string})
 
-def process_after_stop():
+def process_after_stop(user_id):
     """Función que procesa la grabación después de detenerla."""
-    global prediction
-    global historial
-    if frame_queue:
-        prediction = process_recording(frame_queue)
-        now = datetime.now()
-        dt = now.strftime("%d/%m/%Y %H:%M:%S")
-        st = dt + " - " + prediction
-        historial.append(st)
-        print(f"Predicción: {prediction}")
-    else:
-        print("No hay datos en la cola para procesar.")
+    with app.app_context():
+        # Aquí debes envolver también un contexto de prueba de solicitud
+        with app.test_request_context():
+            global prediction
+            global historial
+            if frame_queue:
+                prediction = process_recording(frame_queue)
+                now = datetime.now()
+                dt = now.strftime("%d/%m/%Y %H:%M:%S")
+                st = dt + " - " + prediction
+                
+                if user_id not in global_historial:
+                    global_historial[user_id] = []
+                global_historial[user_id].append(st)
+                
+                print(f"Predicción: {prediction}")
+            else:
+                print("No hay datos en la cola para procesar.")
 
 def hay_datos_para_procesar():
     """Verifica si hay datos en la cola para procesar."""
@@ -147,8 +154,8 @@ def stop_recording():
             "message": "No hay datos en la cola para procesar."
         }), 200
 
-    # Simula el procesamiento de los datos
-    threading.Thread(target=process_after_stop).start()
+    user_id = request.remote_addr
+    threading.Thread(target=process_after_stop, args=(user_id,)).start()
     
     return jsonify({
         "status": "success",
@@ -212,20 +219,36 @@ def biblioteca():
 
     return render_template('biblioteca.html', alfabeto=alfabeto, palabras=palabras)
 
-# Ruta para descargar el historial
+
+@app.route('/historial')
+def translation_history():
+    user_id = request.remote_addr
+    if user_id not in global_historial:
+        return "No hay historial disponible."
+    historial = global_historial[user_id]
+    print(f"Historial: {historial}")
+    return render_template('historial.html', historial=historial)
+
+@app.route('/clear_history')
+def clear_history():
+    user_id = request.remote_addr
+    if user_id not in global_historial:
+        return "No hay historial disponible para borrar."
+    global_historial[user_id] = []
+    return redirect(url_for('translation_history'))
+
 @app.route('/download_history')
 def download_history():
-    global historial
-    if not historial:
+    user_id = request.remote_addr
+    if user_id not in global_historial:
         return "No hay historial disponible para descargar."
-        
     timestamp = datetime.now().strftime("%Y%m%d%H")
-    user_history_file = os.path.join(history_folder, f"historial_{timestamp}.txt")
-    with open(user_history_file, 'w') as file:
-        for palabra in historial:
-            file.write(palabra + '\n')
-        file.write("Grabación detenida\n")  # Añadimos este mensaje al historial
-    return send_file(user_history_file, as_attachment=True)
+    user_history_file = BytesIO()
+    user_history_file.write("Historial de usuario:\n".encode('utf-8'))
+    for palabra in global_historial[user_id]:
+        user_history_file.write((palabra + '\n').encode('utf-8'))    
+    user_history_file.seek(0)  # Mover el puntero al inicio del archivo en memoria
+    return send_file(user_history_file, as_attachment=True, download_name=f"historial_{timestamp}.txt", mimetype='text/plain')
 
 # Definición de rutas
 @app.route("/")
@@ -233,7 +256,10 @@ def index():
     """
     Renderiza la página de inicio.
     """
+    user_id = request.remote_addr
+    if user_id not in global_historial:
+        global_historial[user_id] = []
     return render_template("index.html")
-# Iniciar la aplicación Flask
+
 if __name__ == "__main__":
-    app.run("127.0.0.1", 5000, debug=True)
+    socketio.run(app, host="127.0.0.1", port=5000, debug=True)
