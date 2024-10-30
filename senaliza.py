@@ -97,31 +97,20 @@ def send_updates():
 
 def process_after_stop(user_id):
     """Función que procesa la grabación después de detenerla."""
-    with app.app_context():
-        # Aquí debes envolver también un contexto de prueba de solicitud
-        with app.test_request_context():
-            global prediction
-            global historial
-            if frame_queue:
-                prediction = process_recording(frame_queue)
-                now = datetime.now()
-                dt = now.strftime("%d/%m/%Y %H:%M:%S")
-                st = dt + " - " + prediction
-                
-                if user_id not in global_historial:
-                    global_historial[user_id] = []
-                global_historial[user_id].append(st)
-                
-                print(f"Predicción: {prediction}")
-            else:
-                print("No hay datos en la cola para procesar.")
-
-def hay_datos_para_procesar():
-    """Verifica si hay datos en la cola para procesar."""
-    global cola_de_grabaciones  # Asegurarse de usar la variable global
-    if len(cola_de_grabaciones) == 0:
-        return False
-    return True
+    global prediction
+    if frame_queue:
+        prediction = process_recording(frame_queue)
+        now = datetime.now()
+        dt = now.strftime("%d/%m/%Y %H:%M:%S")
+        st = dt + " - " + prediction
+        
+        if user_id not in global_historial:
+            global_historial[user_id] = []
+        global_historial[user_id].append(st)
+        
+        print(f"Predicción: {prediction}")
+    else:
+        print("No hay datos en la cola para procesar.")
 
 @socketio.on('connect')
 def handle_connect():
