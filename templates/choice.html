@@ -8,8 +8,9 @@
     A continuacion selecciona una de las siguientes opciones para empezar a traducir lengua de señas colombiana.
     </p>
     <div class="row">
-        <div class="col"><a href="{{ url_for('alphabet') }}" class="btn btn-primary btn-lg px-5 rounded-pill">Alfabeto</a></div>
-        <div class="col"><a href="{{ url_for('words') }}" class="btn btn-primary btn-lg px-5 rounded-pill">Palabras</a></div>
+        <div class="col-3 me-3"><a href="{{ url_for('alphabet') }}" class="btn btn-primary btn-lg px-5 rounded-pill">Alfabeto</a></div>
+        <div class="col-3 ms-5 me-5"><a href="{{ url_for('words') }}" class="btn btn-primary btn-lg px-5 rounded-pill">Palabras</a></div>
+        <div class="col-3 ms-3"><a href="{{ url_for('phrases') }}" class="btn btn-primary btn-lg px-5 rounded-pill">Frases</a></div>
     </div>
 </div>
 {% endblock %}

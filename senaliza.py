@@ -20,8 +20,11 @@ from src.camara_flask import (
     model_global,
     process_frame,
 )
-from src.recording import (
-    process_recording,
+from src.recording_words import (
+    process_recording_w,
+)
+from src.recording_phrases import (
+    process_recording_p,
 )
 
 app = Flask(__name__)
@@ -30,7 +33,8 @@ socketio = SocketIO(app)
 # Variables globales
 is_recording = False
 frame_queue = queue.Queue()
-prediction = ""
+prediction_word = ""
+prediction_phrase = ""
 cola_de_grabaciones = []
 
 global_historial = {}
@@ -88,33 +92,64 @@ def generate_video():
     cap.release()
     
 
-def send_updates():
-    global prediction
+def send_updates_word():
+    global prediction_word
     while True:
+        if prediction_word is not None:
+            dynamic_string = "La palabra es: " + prediction_word 
+            socketio.emit('update_string_word', {'text': dynamic_string})
         time.sleep(5)  # Actualizar cada 5 segundos
-        dynamic_string = "La palabra es: " + prediction
-        socketio.emit('update_string', {'text': dynamic_string})
 
-def process_after_stop(user_id):
+def send_updates_phrase():
+    global prediction_phrase
+    while True:
+        if prediction_phrase is not None:
+            time.sleep(5)  # Actualizar cada 5 segundos
+            dynamic_string = "La frase es: " + prediction_phrase 
+            socketio.emit('update_string_phrase', {'text': dynamic_string})
+        time.sleep(5)  # Actualizar cada 5 segundos
+
+
+def process_after_stop(user_id, template):
     """Función que procesa la grabación después de detenerla."""
-    global prediction
+    global prediction_word
+    global prediction_phrase
     if frame_queue:
-        prediction = process_recording(frame_queue)
-        now = datetime.now()
-        dt = now.strftime("%d/%m/%Y %H:%M:%S")
-        st = dt + " - " + prediction
-        
-        if user_id not in global_historial:
-            global_historial[user_id] = []
-        global_historial[user_id].append(st)
-        
-        print(f"Predicción: {prediction}")
+        if template == "words":
+            prediction_word = process_recording_w(frame_queue)
+            
+            if prediction_word is not None:
+                now = datetime.now()
+                dt = now.strftime("%d/%m/%Y %H:%M:%S")
+                st = dt + " - " + prediction_word
+                
+                if user_id not in global_historial:
+                    global_historial[user_id] = []
+                global_historial[user_id].append(st)
+            
+            print(f"Predicción: {prediction_word}")
+        if template == "phrases":
+            prediction_phrase = process_recording_p(frame_queue)
+            
+            if prediction_phrase is not None:
+                now = datetime.now()
+                dt = now.strftime("%d/%m/%Y %H:%M:%S")
+                st = dt + " - " + prediction_phrase
+                
+                if user_id not in global_historial:
+                    global_historial[user_id] = []
+                global_historial[user_id].append(st)
+            
+            print(f"Predicción: {prediction_phrase}")
+        else:
+            print("No hay template para procesar.")
     else:
         print("No hay datos en la cola para procesar.")
 
 @socketio.on('connect')
 def handle_connect():
-    threading.Thread(target=send_updates).start()
+    threading.Thread(target=send_updates_word).start()
+    threading.Thread(target=send_updates_phrase).start()
 
 @app.route("/start_recording", methods=["POST"])
 def start_recording():
@@ -127,8 +162,8 @@ def start_recording():
         "message": "Grabación iniciada"
     })
 
-@app.route("/stop_recording", methods=["POST"])
-def stop_recording():
+@app.route("/stop_recording/<template>", methods=["POST"])
+def stop_recording(template):
     """Detiene la grabación y lanza el procesamiento en segundo plano."""
     global is_recording
     global cola_de_grabaciones
@@ -144,11 +179,43 @@ def stop_recording():
         }), 200
 
     user_id = request.remote_addr
-    threading.Thread(target=process_after_stop, args=(user_id,)).start()
+    threading.Thread(target=process_after_stop, args=(user_id,template,)).start()
     
     return jsonify({
         "status": "success",
         "message": "Grabación detenida. Traduciendo..."
+    }), 200
+
+@app.route("/upload_video/<template>", methods=["POST"])
+def upload_video(template):
+    global frame_queue
+    if 'video' not in request.files:
+        return jsonify({"status": "error", "message": "No se encontró el archivo de video"}), 400
+    
+    video_file = request.files['video']
+    video_path = os.path.join("uploads", video_file.filename)  # Guarda el video en una carpeta 'uploads'
+    video_file.save(video_path)
+    
+    cap = cv2.VideoCapture(video_path)
+    frame_count = 0
+    
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+        
+        # Añadir frame a la cola
+        frame_queue.put(frame)
+        frame_count += 1
+    
+    cap.release()
+    
+    user_id = request.remote_addr
+    threading.Thread(target=process_after_stop, args=(user_id,template,)).start()
+    
+    return jsonify({
+        "status": "success",
+        "message": "Video subido. Traduciendo..."
     }), 200
 
 @app.route("/alphabet")
@@ -165,6 +232,13 @@ def words():
     """
     return render_template("words.html")
 
+@app.route("/phrases")
+def phrases():
+    """
+    Renderiza la página del alfabeto para la traducción.
+    """
+    return render_template("phrases.html")
+
 @app.route("/video_feed_alphabet")
 def video_feed_alphabet():
     """
@@ -176,6 +250,15 @@ def video_feed_alphabet():
 
 @app.route("/video_feed_words")
 def video_feed_words():
+    """
+    Proporciona la transmisión de video procesada.
+    """
+    return Response(
+        generate_video(), mimetype="multipart/x-mixed-replace; boundary=frame"
+    )
+
+@app.route("/video_feed_phrases")
+def video_feed_phrases():
     """
     Proporciona la transmisión de video procesada.
     """

@@ -1,4 +1,5 @@
 *LSC
 #Ignore Models
 *.pth
+*.mp4
 .venv/

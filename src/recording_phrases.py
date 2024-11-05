@@ -6,14 +6,14 @@ import threading
 import queue
 
 # Cargar el modelo
-model = torch.load('data/senaliza-final1.pth', map_location=torch.device("cpu"), weights_only=False)
+model = torch.load('data/senaliza-final1-2.pth', map_location=torch.device("cpu"), weights_only=False)
 model.eval()
 
 frame_skip = 3
-max_frames = 32
+max_frames = 64
 
 
-palabras = ["Gracias","Hola","Por Favor"]
+palabras = ["¿Cómo te llamas?","Hola, ¿Cómo estás?","Mucho gusto en conocerte"]
 
 # Transformación para normalizar los frames
 transform = transforms.Compose([
@@ -23,7 +23,7 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
-def process_recording(frame_queue):
+def process_recording_p(frame_queue):
     frames = []
     frame_count = 0
     print(f"Procesando {frame_queue.qsize()} frames...")
