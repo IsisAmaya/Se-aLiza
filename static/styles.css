@@ -1,6 +1,6 @@
 /* Fuente y estilo general */
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   background-color: #f1f4f8;
   color: #212529;
 }
@@ -85,3 +85,16 @@ footer {
 .video-box:hover {
   transform: scale(1.5); /* Zooms in when hovering */
 }
+
+/* Estilo personalizado para el botón de selección de archivos */
+.custom-file-upload {
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: #fff;
+  background-color: #6c757d; /* Gris Bootstrap para btn-secondary */
+  border-radius: 50px;
+  border: none;
+  font-size: 0.875rem;
+}
+
