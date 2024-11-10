@@ -6,14 +6,13 @@ import threading
 import queue
 
 # Cargar el modelo
-model = torch.load('data/senaliza-final1-2.pth', map_location=torch.device("cpu"), weights_only=False)
+model = torch.load('data/senaliza-final2-2.pth', map_location=torch.device("cpu"), weights_only=False)
 model.eval()
 
-frame_skip = 3
+frame_skip = 2
 max_frames = 64
 
-
-palabras = ["¿Cómo te llamas?","Hola, ¿Cómo estás?","Mucho gusto en conocerte"]
+palabras = ["¿Cómo te llamas?", "Hola, ¿Cómo estás?", "Mucho gusto en conocerte"]
 
 # Transformación para normalizar los frames
 transform = transforms.Compose([
@@ -36,14 +35,17 @@ def process_recording_p(frame_queue):
             frames.append(frame)
         frame_count += 1
 
-    # Si hay suficientes frames, hacer predicción
-    if len(frames) >= max_frames:
-        frames = frames[:max_frames]  # Limitar al máximo permitido
-        frames_tensor = torch.stack(frames).unsqueeze(0)
-        word_prediction = predict(frames_tensor)
-        return palabras[word_prediction]
+    # Añadir frames vacíos si hay menos de max_frames
+    if len(frames) < max_frames:
+        empty_frame = torch.zeros((3, 224, 224))  # Frame vacío (negro) con las dimensiones necesarias
+        while len(frames) < max_frames:
+            frames.append(empty_frame)
     else:
-        print("No hay suficientes frames para procesar.")
+        frames = frames[:max_frames]  # Limitar al máximo permitido
+
+    frames_tensor = torch.stack(frames).unsqueeze(0)  # Crear el tensor de entrada
+    word_prediction = predict(frames_tensor)
+    return palabras[word_prediction]
 
 def predict(video):
     with torch.no_grad():
@@ -51,5 +53,4 @@ def predict(video):
         _, predicted = torch.max(output.logits, 1)
         print(f"Predicción: {predicted.item()}")
         return predicted.item()
-
 

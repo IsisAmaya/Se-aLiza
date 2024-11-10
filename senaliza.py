@@ -96,7 +96,7 @@ def send_updates_word():
     global prediction_word
     while True:
         if prediction_word is not None:
-            dynamic_string = "La palabra es: " + prediction_word 
+            dynamic_string = "La palabra es: " + (prediction_word or " ")
             socketio.emit('update_string_word', {'text': dynamic_string})
         time.sleep(5)  # Actualizar cada 5 segundos
 
@@ -104,10 +104,9 @@ def send_updates_phrase():
     global prediction_phrase
     while True:
         if prediction_phrase is not None:
-            time.sleep(5)  # Actualizar cada 5 segundos
-            dynamic_string = "La frase es: " + prediction_phrase 
+            dynamic_string = "La frase es: " + (prediction_phrase or " ")
             socketio.emit('update_string_phrase', {'text': dynamic_string})
-        time.sleep(5)  # Actualizar cada 5 segundos
+        time.sleep(5)  
 
 
 def process_after_stop(user_id, template):
@@ -209,9 +208,12 @@ def upload_video(template):
         frame_count += 1
     
     cap.release()
+    time.sleep(1)
     
     user_id = request.remote_addr
     threading.Thread(target=process_after_stop, args=(user_id,template,)).start()
+    
+    os.remove(video_path)
     
     return jsonify({
         "status": "success",

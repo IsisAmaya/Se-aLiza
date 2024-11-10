@@ -105,6 +105,13 @@ function leerTexto(texto) {
   function uploadVideo() {
     var formData = new FormData();
     var videoFile = document.getElementById("video-file").files[0];
+
+    // Verificación si hay archivo seleccionado
+    if (!videoFile) {
+      alert("Por favor selecciona un archivo de video.");
+      return;
+    }
+
     formData.append("video", videoFile);
 
     fetch("/upload_video/phrases", {
@@ -112,10 +119,19 @@ function leerTexto(texto) {
       body: formData
     })
     .then(response => response.json())
+    .then(data => {
+      if (data.status === "success") {
+        console.log("Mensaje del servidor:", data.message);
+        alert(data.message); // Mostrar el mensaje en una alerta o en la interfaz
+      } else {
+        console.error("Error en el servidor:", data.message);
+      }
+    })
     .catch(error => {
       console.error("Error al cargar el video:", error);
     });
   }
 </script>
+
 
 {% endblock %}
