@@ -1,62 +1,50 @@
-{% extends 'base.html' %} {% block title %}Frases - SeñaLiza{% endblock %} {%
-block content %}
+{% extends 'base.html' %}
+
+{% block title %}Frases - SeñaLiza{% endblock %}
+
+{% block content %}
 <div class="video-frame p-5 shadow-lg rounded-4 bg-white">
   <h2 class="mb-4 fw-bold">Frases en Lengua de Señas</h2>
   <p class="mb-4 text-muted">
-    Comienza la grabacion de una Frase en lengua de señas, cuando termines de
-    grabar la Frase, presiona el boton de detener.
+    Comienza la grabación de una Frase en lengua de señas. Cuando termines de
+    grabar, presiona el botón de detener.
   </p>
   <div class="d-flex justify-content-center">
     <img src="{{ url_for('video_feed_phrases') }}" class="video-box" />
   </div>
   <div class="d-flex justify-content-center mt-4">
-      <h4 class="mb-0" id="dynamic-string-phrase">Traducción</h4>
-      <button
-        onclick="leerTexto(document.getElementById('dynamic-string-phrase').innerText)"
-        class="btn btn-link ms-2"
-      >
-        <i class="fas fa-volume-up fa-lg"></i>
-      </button>
+    <h4 class="mb-0" id="dynamic-string-phrase">Traducción</h4>
+    <button
+      onclick="leerTexto(document.getElementById('dynamic-string-phrase').innerText)"
+      class="btn btn-link ms-2"
+    >
+      <i class="fas fa-volume-up fa-lg"></i>
+    </button>
   </div>
   <div class="row">
-    <div class="col">
-      <div class="container mt-4">
-        <button id="start-btn" class="btn btn-primary btn-lg px-5 rounded-pill">
-          Grabar
-        </button>
-      </div>
+    <div class="col d-flex justify-content-center">
+      <button id="start-btn" class="btn btn-primary btn-lg px-5 rounded-pill mt-4">
+        Grabar
+      </button>
     </div>
-    <div class="col">
-      <div class="container mt-4">
-        <button
-          id="stop-btn"
-          class="btn btn-secondary btn-lg px-5 rounded-pill"
-        >
-          Detener
-        </button>
-      </div>
+    <div class="col d-flex justify-content-center">
+      <button id="stop-btn" class="btn btn-secondary btn-lg px-5 rounded-pill mt-4">
+        Detener
+      </button>
     </div>
   </div>
-  <div class="container mt-4">
-    <form id="upload-video-form" enctype="multipart/form-data">
-      <input type="file" id="video-file" name="video" accept="video/*">
-      <button  type="button" onclick="uploadVideo()">Subir Video</button>
+  <div class="d-flex flex-column align-items-center mt-4">
+    <form id="upload-video-form" enctype="multipart/form-data" class="d-flex gap-3">
+      <label for="video-file" class="custom-file-upload btn btn-secondary btn-sm px-3 rounded-pill">Seleccionar</label>
+      <input type="file" id="video-file" name="video" accept="video/*" style="display: none;">
+      <button type="button" onclick="uploadVideo()" class="btn btn-secondary btn-sm px-3 rounded-pill">Subir Video</button>
     </form>
   </div>
-  <div class="mt-4">
-    <a
-      href="{{ url_for('finish_translate') }}"
-      class="btn btn-danger btn-lg px-5 rounded-pill"
-      >Finalizar</a
-    >
+  <div class="d-flex justify-content-center mt-4">
+    <a href="{{ url_for('finish_translate') }}" class="btn btn-danger btn-lg px-5 rounded-pill">Finalizar</a>
   </div>
-  <div class="mt-4">
-    <img
-      src="{{ url_for('static', filename='Terminar.gif') }}"
-      alt="Terminar Traducción"
-      width="175"
-      height="105"
-    />
+  <div class="mt-4 d-flex justify-content-center">
+    <img src="{{ url_for('static', filename='Terminar.gif') }}" alt="Terminar Traducción" width="175" height="105" />
   </div>
 </div>
 

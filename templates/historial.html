@@ -1,28 +1,37 @@
-{% extends 'base.html' %} {% block title %}Inicio - SeñaLiza{% endblock %} {%
-block content %}
-<h2>Historial de Palabras</h2>
+{% extends 'base.html' %}
+
+{% block title %}Historial de Palabras - SeñaLiza{% endblock %}
+
+{% block content %}
 <div class="video-frame p-5 shadow-lg rounded-4 bg-white">
-  <ul class="list-group">
+  <h2 class="mb-4 fw-bold">Historial de Palabras</h2>
+  <!-- GIF debajo del título -->
+  <div class="text-center mb-4">
+    <img src="{{ url_for('static', filename='Historial.gif') }}" alt="GIF Historial" width="150">
+  </div>
+
+  <ul class="list-group mb-4">
     {% for traduccion in historial %}
     <li class="list-group-item list-group-item-primary">{{ traduccion }}</li>
     {% endfor %}
   </ul>
 
-  <div class="row mt-4">
-    <div class="col">
-      <div class="text-end">
-        <a href="{{ url_for('clear_history') }}">
-          <button class="btn btn-link">Borrar Historial</button>
-        </a>
+  <div class="d-flex justify-content-around">
+    <!-- Botón de Borrar con GIF debajo -->
+    <div class="text-center">
+      <a href="{{ url_for('clear_history') }}" class="btn btn-primary btn-sm px-3 rounded-pill">Borrar Historial</a>
+      <div class="mt-2">
+        <img src="{{ url_for('static', filename='Borrar.gif') }}" alt="GIF Borrar" width="100">
       </div>
     </div>
-    <div class="col">
-      <div class="text-start">
-        <a href="{{ url_for('download_history') }}">
-          <button class="btn btn-link">Descargar Historial</button>
-        </a>
+
+    <!-- Botón de Descargar con GIF debajo -->
+    <div class="text-center">
+      <a href="{{ url_for('download_history') }}" class="btn btn-primary btn-sm px-3 rounded-pill">Descargar Historial</a>
+      <div class="mt-2">
+        <img src="{{ url_for('static', filename='Descarga.gif') }}" alt="GIF Descarga" width="100">
+      </div>
     </div>
-    </div>
-  </div>  
+  </div>
 </div>
 {% endblock %}

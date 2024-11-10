@@ -3,12 +3,13 @@ Este módulo captura video de la cámara, procesa los frames usando Mediapipe y 
 PyTorch para predecir letras en lenguaje de señas.
 """
 
+import os
+
 import cv2  # pylint: disable=no-member
 import mediapipe as mp
 import numpy as np
 import torch
 import torch.nn.functional as F
-import os
 
 # Asegúrate de que aquí importas la arquitectura del modelo que hayas definido
 from src.senaliza_v2 import \
@@ -21,7 +22,8 @@ model_global = ColombianHandGestureResnet()
 print("Directorio actual:", os.getcwd())
 
 # Cargar los pesos del modelo (state_dict) en lugar de todo el modelo
-state_dict = torch.load("data/senalizaV5-1.pth",
+state_dict = torch.load(
+    "data/senalizaV5-1.pth",
     map_location=torch.device("cpu"),
 )
 
@@ -94,7 +96,9 @@ def process_frame(frame, model, hands, letter_pred):  # pylint: disable=too-many
             )  # pylint: disable=no-member
             analysis_frame = analysis_frame[y_min:y_max, x_min:x_max]
             if analysis_frame.size > 0:
-                analysis_frame = cv2.resize(analysis_frame, (64, 64))  # pylint: disable=no-member
+                analysis_frame = cv2.resize(
+                    analysis_frame, (64, 64)
+                )  # pylint: disable=no-member
                 analysis_frame = (
                     torch.tensor(analysis_frame, dtype=torch.float32)
                     .unsqueeze(0)
@@ -120,6 +124,8 @@ def process_frame(frame, model, hands, letter_pred):  # pylint: disable=too-many
                     2,
                 )
             else:
-                print("Error: El frame de análisis está vacío, no se puede redimensionar.")
+                print(
+                    "Error: El frame de análisis está vacío, no se puede redimensionar."
+                )
 
     return frame
